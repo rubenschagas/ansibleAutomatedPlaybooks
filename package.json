@@ -1,0 +1,14 @@
+{
+  "name": "ansibleAutomatedPlaybooks",
+  "description": "Some Ansible automated playbooks to create users, databases and tables.",
+  "version": "1.0.0",
+  "repository": "https://github.com/rubenschagas/postgres",
+  "author": "Rubens Chagas",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "docker": ">=24.0.2",
+    "docker compose": ">=2.18.1",
+    "a postgres dbms client, like DBeaver": ">=23.x"
+  }
+}
