@@ -12,7 +12,7 @@
 
 ## OVERVIEW
 
-The objective of this README.md document file is to provide help on how to run the automated deployment of some Ansible automated playbooks files to create users, databases and tables.
+The objective of this README.md document file is to provide help on how to run the automated deployment, as a Proof of Concept (POC), of some Ansible automated playbooks files to create users, databases and tables.
 
 A local Postgis dbms server based on Docker is available at the [Postgres](https://github.com/rubenschagas/postgres) project.
 
@@ -39,4 +39,4 @@ ansible-playbook -vv -e "ansible_user=ansible" -K create-postgres-user-db-table.
 
 ## REFERENCES
 
-#### [Ansible Documentation](https://docs.ansible.com/ansible/2.9/index.html)
+#### [Official Ansible Documentation](https://docs.ansible.com/ansible/2.9/index.html)
