@@ -1,4 +1,4 @@
-# SOME ANSIBLE BASED AUTOMATED DEPLOYMENT PLAYBOOKS TO CREATE USERS, DATABASES AND TABLES
+# AN ASSORTMENT OF ANSIBLE-BASED AUTOMATED DEPLOYMENT PLAYBOOKS DESIGNED TO CREATE USERS, DATABASES, AND TABLES
 
 ## TABLE OF CONTENTS
 
@@ -12,7 +12,7 @@
 
 ## OVERVIEW
 
-The objective of this README.md document file is to provide help on how to run the automated deployment, as a Proof of Concept (POC), of some Ansible automated playbooks files to create users, databases and tables.
+The purpose of this README.md file is to guide users through the Proof of Concept (POC) automated deployment using Ansible playbooks. These playbooks are designed to create users, databases, and tables.
 
 A local Postgis dbms server based on Docker is available at the [Postgres](https://github.com/rubenschagas/postgres) project.
 
