@@ -1,0 +1,41 @@
+---
+
+- name: Remove postgres project
+  docker_compose:
+    project_src: postgres
+    state: absent
+  tags:
+    - create-docker-container
+
+- name: Start postgres project with inline definition
+  docker_compose:
+    project_name: postgres
+    definition:
+      version: '2'
+      services:
+        db:
+          image: postgres
+        web:
+          build: "{{ playbook_dir }}/postgres"
+          command: "python manage.py runserver 0.0.0.0:8000"
+          volumes:
+            - "{{ playbook_dir }}/postgres:/code"
+          ports:
+            - "8000:8000"
+          depends_on:
+            - db
+  register: output
+  tags:
+    - create-docker-container
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
+
+- name: Verify that the db and web services are running
+  ansible.builtin.assert:
+    that:
+      - "output.services.web.postgres_web_1.state.running"
+      - "output.services.db.postgres_db_1.state.running"
+  tags:
+    - create-docker-container

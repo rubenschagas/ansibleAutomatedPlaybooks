@@ -1,0 +1,22 @@
+---
+
+- name: Create the user ansible
+  user:
+    name: ansible
+    comment: Create an ansible user for automation purposes.
+    password_lock: yes
+    append: yes
+    local: yes
+  tags:
+    - create-ansible-user-creation
+    - create-ansible-user
+
+- name: Append the ansible user in /etc/sudoers, if absent
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^ansible\s'
+    state: present
+    line: 'ansible ALL=(ALL) NOPASSWD:ALL'
+  tags:
+    - create-ansible-user-sudoers
+    - create-ansible-user

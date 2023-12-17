@@ -1,0 +1,45 @@
+---
+
+- name: Create the ruler user and the company db
+  postgresql_user:
+    name: ruler
+    state: present
+    password: ruler@123
+    encrypted: true
+    login_user: postgres
+    login_password: postgres
+    comment: create the ruler user and the company db
+  tags:
+    - create-user
+    - create-user-db-table
+
+- name: Create the company db
+  postgresql_db:
+    name: company
+    state: present
+    login_user: postgres
+    login_password: postgres
+    login_unix_socket: /var/run/postgresql/
+    owner: ruler
+    template: template0
+    encoding: UTF-8
+  tags:
+    - create-db
+    - create-user-db-table
+
+- name: Create the companies table with some columns
+  postgresql_table:
+    db: company
+    table: companies
+    state: present
+    login_user: postgres
+    login_password: postgres
+    owner: ruler
+    login_unix_socket: /var/run/postgresql/
+    columns:
+      - id bigserial primary key
+      - name text
+      - email text
+  tags:
+    - create-table
+    - create-user-db-table
