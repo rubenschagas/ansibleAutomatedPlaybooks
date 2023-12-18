@@ -1,0 +1,8 @@
+---
+
+- name: Installs the python3-psycopg2 package (Python PostgreSQL adapter)
+  become: yes
+  apt:
+    name: python3-psycopg2
+    state: present
+#  when: ansible_os_family == "Ubuntu"
