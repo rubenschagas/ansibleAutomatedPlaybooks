@@ -5,4 +5,4 @@
   apt:
     name: python3-psycopg2
     state: present
-#  when: ansible_os_family == "Ubuntu"
+  when: ansible_os_family == "Ubuntu"
