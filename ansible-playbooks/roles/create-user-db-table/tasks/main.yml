@@ -40,6 +40,39 @@
       - id bigserial primary key
       - name text
       - email text
+      - cnpj bigint
+      - employees integer
   tags:
     - create-table
+    - create-user-db-table
+
+- name: Create some companies data
+  postgresql_query:
+    db: company
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO companies (name, email, cnpj, employees) VALUES ('{{ item.name }}', '{{ item.email }}', {{ item.cnpj }}, {{ item.employees }});"
+  loop:
+    - { name: 'Company 1', email: 'info@company1.com', cnpj: 111222333000144, employees: 110 }
+    - { name: 'Company 2', email: 'info@company2.com', cnpj: 111222333000155, employees: 90 }
+  tags:
+    - create-data
+    - create-user-db-table
+
+- name: Calculates the avg employees quantity
+  postgresql_query:
+    db: company
+    login_user: postgres
+    login_password: postgres
+    query: "SELECT AVG(employees) AS quantity_of_employees FROM companies;"
+  register: query_result
+  tags:
+    - avg
+    - create-user-db-table
+
+- name: Prints the quantity of employees from all companies
+  debug:
+    var: query_result
+  tags:
+    - avg
     - create-user-db-table

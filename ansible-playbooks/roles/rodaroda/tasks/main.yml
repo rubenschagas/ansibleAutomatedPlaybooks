@@ -1,0 +1,107 @@
+---
+
+- name: Create the ruler user and the company db
+  postgresql_user:
+    name: ruler
+    state: present
+    password: ruler@123
+    encrypted: true
+    login_user: postgres
+    login_password: postgres
+    comment: create the ruler user and the company db
+  tags:
+    - create-user
+    - create-user-db-table
+
+- name: Create the company db
+  postgresql_db:
+    name: rodaroda
+    state: present
+    login_user: postgres
+    login_password: postgres
+    login_unix_socket: /var/run/postgresql/
+    owner: ruler
+    template: template0
+    encoding: UTF-8
+  tags:
+    - create-db
+    - create-user-db-table
+
+- name: Create the localidade table with some columns
+  postgresql_table:
+    db: rodaroda
+    table: localidade
+    state: present
+    login_user: postgres
+    login_password: postgres
+    owner: ruler
+    login_unix_socket: /var/run/postgresql/
+    columns:
+      - id serial primary key
+      - nome varchar(100) not null
+      - tipo varchar(100) check (tipo in ('origem', 'destino')) not null
+  tags:
+    - create-table
+    - create-user-db-table
+
+- name: Create the Produto table
+  postgresql_table:
+    db: rodaroda
+    table: produto
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - nome varchar(100) not null
+      - descricao text not null
+  tags:
+    - create-table
+
+- name: Create the Transportadora table
+  postgresql_table:
+    db: rodaroda
+    table: transportadora
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - nome varchar(100) not null
+      - contato varchar(100) not null
+  tags:
+    - create-table
+
+- name: Create the Veiculo table
+  postgresql_table:
+    db: rodaroda
+    table: veiculo
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - nome varchar(100) not null
+      - modelo varchar(100) not null
+      - placa varchar(10) not null
+  tags:
+    - create-table
+
+- name: Create the Viagem table
+  postgresql_table:
+    db: rodaroda
+    table: viagem
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - origem_id int references localidade(id) on delete no action
+      - destino_id int references localidade(id) on delete no action
+      - produto_id int references produto(id) on delete no action
+      - transportadora_id int references transportadora(id) on delete no action
+      - veiculo_id int references veiculo(id) on delete no action
+      - data_partida timestamp not null
+      - data_chegada timestamp not null
+  tags:
+    - create-table

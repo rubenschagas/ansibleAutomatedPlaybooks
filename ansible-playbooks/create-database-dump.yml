@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: true
+  become_user: ansible
+  vars:
+    database_name: company
+    backup_destination: /var/run/postgresql/dumps
+  roles:
+    - create-database-dump

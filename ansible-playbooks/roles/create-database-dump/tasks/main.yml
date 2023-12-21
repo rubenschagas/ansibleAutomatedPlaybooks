@@ -1,0 +1,51 @@
+---
+
+- name: Creates a folder
+  file:
+    path: "{{ backup_destination }}"
+    state: directory
+    mode: 0777
+  delegate_to: localhost
+  tags:
+    - create-dir
+
+- name: Creates a dump file from a database
+  community.postgresql.postgresql_db:
+    name: "{{ database_name }}"
+    state: dump
+    login_user: postgres
+    login_password: postgres
+    target: "{{backup_destination}}/backup_{{database_name}}.sql"
+  delegate_to: localhost
+  tags:
+    - create-dump
+
+- name: Verifies if the dump file exists
+  stat:
+    path: "{{backup_destination}}/backup_{{database_name}}.sql"
+  register: dump_file_stat
+  delegate_to: localhost
+  tags:
+    - restore-dump
+
+- name: Verifies if the database exists
+  community.postgresql.postgresql_db:
+    name: "{{ database_name }}"
+    state: present
+    login_user: postgres
+    login_password: postgres
+  delegate_to: localhost
+  tags:
+    - restore-dump
+
+- name: Restores a dump file to a database
+  community.postgresql.postgresql_db:
+    name: "{{ database_name }}"
+    state: restore
+    login_user: postgres
+    login_password: postgres
+    target: "{{backup_destination}}/backup_{{database_name}}.sql"
+  delegate_to: localhost
+  when: dump_file_stat.stat.exists
+  tags:
+    - restore-dump

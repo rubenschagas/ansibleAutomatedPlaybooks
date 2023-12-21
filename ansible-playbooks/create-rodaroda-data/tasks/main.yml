@@ -1,0 +1,63 @@
+---
+
+- name: Insert data into the Localidade table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO localidade (nome, tipo) VALUES ('{{ item.nome }}', '{{ item.tipo }}');"
+  loop:
+    - { nome: 'Localidade 1', tipo: 'origem' }
+    - { nome: 'Localidade 2', tipo: 'destino' }
+    - { nome: 'Localidade 3', tipo: 'origem' }
+    - { nome: 'Localidade 4', tipo: 'destino' }
+  tags:
+    - create-data
+
+- name: Insert data into the Produto table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO Produto (nome, descricao) VALUES ('{{ item.nome }}', '{{ item.descricao }}');"
+  loop:
+    - { nome: 'Product 1', descricao: 'Description 1' }
+    - { nome: 'Product 2', descricao: 'Description 2' }
+  tags:
+    - create-data
+
+- name: Insert data into the Transportadora table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO Transportadora (nome, contato) VALUES ('{{ item.nome }}', '{{ item.contato }}');"
+  loop:
+    - { nome: 'Carrier 1', contato: 'Contact 1' }
+    - { nome: 'Carrier 2', contato: 'Contact 2' }
+  tags:
+    - create-data
+
+- name: Insert data into the Veiculo table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO Veiculo (nome, modelo, placa) VALUES ('{{ item.nome }}', '{{ item.modelo }}', '{{ item.placa }}');"
+  loop:
+    - { nome: 'Vehicle 1', modelo: 'Model 1', placa: 'ABC0123' }
+    - { nome: 'Vehicle 2', modelo: 'Model 2', placa: 'XYZ0789' }
+  tags:
+    - create-data
+
+- name: Insert data into the Viagem table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO Viagem (origem_id, destino_id, produto_id, transportadora_id, veiculo_id, data_partida, data_chegada) VALUES (1, 2, 1, 1, 1, '{{ item.data_partida }}'::timestamp, '{{ item.data_chegada }}'::timestamp);"
+  loop:
+    - { data_partida: '2023-01-01 08:00:00', data_chegada: '2024-01-01 16:00:00' }
+    - { data_partida: '2023-02-01 09:00:00', data_chegada: '2024-02-01 17:00:00' }
+  tags:
+    - create-data
