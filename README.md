@@ -22,12 +22,10 @@ It is also recommended to use a Portainer management UI which allows you to easi
 
 ## PREREQUISITES
 
-```
 1. "docker": "24.0.2";
 2. "docker compose": "2.18.1";
 3. "a postgres dbms client, like DBeaver": ">=23.x";
 4. "having a local PostgreSQL/Postgis dbms server, as shown on the OVERVIEW section".
-```
 
 ## USE CASES
 
