@@ -1,41 +1,45 @@
 ---
 
-- name: Remove postgres project
-  docker_compose:
-    project_src: postgres
-    state: absent
-  tags:
-    - create-docker-container
+- name: debug info
+  debug:
+    #msg: "Host {{ ansible_hostname }} has {{ ansible_memtotal_mb }} MB Memory and {{ ansible_processor_cores }} CPU Cores."
+    msg: "Suggested shared_buffers_size: {{ansible_memtotal_mb * 0.25}} and rounded  {{(ansible_memtotal_mb * 0.25)|int}} "
 
 - name: Start postgres project with inline definition
-  docker_compose:
-    project_name: postgres
-    definition:
-      version: '2'
-      services:
-        db:
-          image: postgres
-        web:
-          build: "{{ playbook_dir }}/postgres"
-          command: "python manage.py runserver 0.0.0.0:8000"
-          volumes:
-            - "{{ playbook_dir }}/postgres:/code"
-          ports:
-            - "8000:8000"
-          depends_on:
-            - db
-  register: output
-  tags:
-    - create-docker-container
+  docker_container:
+    image: postgres:{{ postgres_version | default('13') }}
+    name: postgres
+    volumes: /var/run/postgresql/:/var/run/postgresql
+    restart_policy: always
+    env:
+      POSTGRES_USER="postgres"
+      POSTGRES_PASSWORD="postgres"
+      POSTGRES_NAME="postgres"
+    ports:
+      - "5432:5432"
+    state: started
+    networks_cli_compatible: true
 
-- name: Show results
-  ansible.builtin.debug:
-    var: output
+- name: Set postgres config
+  community.general.postgresql_set:
+    db: postgres
+    login_host: localhost
+    login_user: postgres
+    login_password: postgres
+    port: 5432
+    name: "{{item.name}}"
+    value: "{{item.value}}"
+  with_items:
+    - {name: 'shared_buffers', value: '{{postgres_shared_buffer}}'}
+    - {name: 'max_connections', value: '{{postgres_max_connections}}'}
+    - {name: 'work_mem', value: '{{postgres_work_mem}}'}
+    - {name: 'maintenance_work_mem', value: '{{postgres_maintenance_work_mem}}'}
+    - {name: 'effective_cache_size', value: '{{postgres_effective_cache_size}}'}
+  register: setup_postgres
 
-- name: Verify that the db and web services are running
-  ansible.builtin.assert:
-    that:
-      - "output.services.web.postgres_web_1.state.running"
-      - "output.services.db.postgres_db_1.state.running"
-  tags:
-    - create-docker-container
+- name: restart postgres
+  community.general.docker_container:
+    name: postgres
+    restart: yes
+    state: started
+  when: setup_postgres

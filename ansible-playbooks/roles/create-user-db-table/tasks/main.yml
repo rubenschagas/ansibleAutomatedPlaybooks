@@ -9,6 +9,14 @@
     login_user: postgres
     login_password: postgres
     comment: create the ruler user and the company db
+  register: debug
+  tags:
+    - create-user
+    - create-user-db-table
+
+- name: Prints debug
+  debug:
+    var: debug
   tags:
     - create-user
     - create-user-db-table
