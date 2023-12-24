@@ -38,7 +38,7 @@
   register: setup_postgres
 
 - name: restart postgres
-  community.general.docker_container:
+  docker_container:
     name: postgres
     restart: yes
     state: started
