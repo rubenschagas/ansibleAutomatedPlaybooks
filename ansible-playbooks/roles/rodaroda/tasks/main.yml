@@ -1,6 +1,6 @@
 ---
 
-- name: Create the ruler user and the company db
+- name: Create the ruler user and the rodaroda db
   postgresql_user:
     name: ruler
     state: present
@@ -8,12 +8,12 @@
     encrypted: true
     login_user: postgres
     login_password: postgres
-    comment: create the ruler user and the company db
+    comment: create the ruler user and the rodaroda db
   tags:
     - create-user
     - create-user-db-table
 
-- name: Create the company db
+- name: Create the rodaroda db
   postgresql_db:
     name: rodaroda
     state: present
@@ -27,7 +27,7 @@
     - create-db
     - create-user-db-table
 
-- name: Create the localidade table with some columns
+- name: Create the Localidade table with some columns
   postgresql_table:
     db: rodaroda
     table: localidade
@@ -44,7 +44,7 @@
     - create-table
     - create-user-db-table
 
-- name: Create the Produto table
+- name: Create the Produto table with some columns
   postgresql_table:
     db: rodaroda
     table: produto
@@ -58,7 +58,7 @@
   tags:
     - create-table
 
-- name: Create the Transportadora table
+- name: Create the Transportadora table with some columns
   postgresql_table:
     db: rodaroda
     table: transportadora
@@ -72,7 +72,7 @@
   tags:
     - create-table
 
-- name: Create the Veiculo table
+- name: Create the Veiculo table with some columns
   postgresql_table:
     db: rodaroda
     table: veiculo
@@ -87,7 +87,7 @@
   tags:
     - create-table
 
-- name: Create the Viagem table
+- name: Create the Viagem table with some columns
   postgresql_table:
     db: rodaroda
     table: viagem
