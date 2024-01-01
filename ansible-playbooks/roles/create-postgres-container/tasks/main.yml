@@ -3,7 +3,7 @@
 - name: debug info
   debug:
     #msg: "Host {{ ansible_hostname }} has {{ ansible_memtotal_mb }} MB Memory and {{ ansible_processor_cores }} CPU Cores."
-    msg: "Suggested shared_buffers_size: {{ansible_memtotal_mb * 0.25}} and rounded  {{(ansible_memtotal_mb * 0.25)|int}} "
+    msg: "Suggested shared_buffers_size: {{ansible_memtotal_mb * 0.25}} and rounded {{(ansible_memtotal_mb * 0.25)|int}}"
 
 - name: Start postgres project with inline definition
   docker_container:
@@ -30,11 +30,11 @@
     name: "{{item.name}}"
     value: "{{item.value}}"
   with_items:
-    - {name: 'shared_buffers', value: '{{postgres_shared_buffer}}'}
-    - {name: 'max_connections', value: '{{postgres_max_connections}}'}
-    - {name: 'work_mem', value: '{{postgres_work_mem}}'}
-    - {name: 'maintenance_work_mem', value: '{{postgres_maintenance_work_mem}}'}
-    - {name: 'effective_cache_size', value: '{{postgres_effective_cache_size}}'}
+    - { name: 'shared_buffers', value: '{{postgres_shared_buffer}}' }
+    - { name: 'max_connections', value: '{{postgres_max_connections}}' }
+    - { name: 'work_mem', value: '{{postgres_work_mem}}' }
+    - { name: 'maintenance_work_mem', value: '{{postgres_maintenance_work_mem}}' }
+    - { name: 'effective_cache_size', value: '{{postgres_effective_cache_size}}' }
   register: setup_postgres
 
 - name: restart postgres
