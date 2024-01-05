@@ -1,63 +1,63 @@
 ---
 
-- name: Insert data into the Localidade table
+- name: Insert data into the Locality table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO localidade (nome, tipo) VALUES ('{{ item.nome }}', '{{ item.tipo }}');"
+    query: "INSERT INTO locality (name, type) VALUES ('{{ item.name }}', '{{ item.type }}');"
   loop:
-    - { nome: 'Localidade 1', tipo: 'origem' }
-    - { nome: 'Localidade 2', tipo: 'destino' }
-    - { nome: 'Localidade 3', tipo: 'origem' }
-    - { nome: 'Localidade 4', tipo: 'destino' }
+    - { name: 'Locality 1', type: 'origin' }
+    - { name: 'Locality 2', type: 'destination' }
+    - { name: 'Locality 3', type: 'origin' }
+    - { name: 'Locality 4', type: 'destination' }
   tags:
     - create-data
 
-- name: Insert data into the Produto table
+- name: Insert data into the Product table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO Produto (nome, descricao) VALUES ('{{ item.nome }}', '{{ item.descricao }}');"
+    query: "INSERT INTO product (name, description) VALUES ('{{ item.name }}', '{{ item.description }}');"
   loop:
-    - { nome: 'Product 1', descricao: 'Description 1' }
-    - { nome: 'Product 2', descricao: 'Description 2' }
+    - { name: 'Product 1', description: 'Description 1' }
+    - { name: 'Product 2', description: 'Description 2' }
   tags:
     - create-data
 
-- name: Insert data into the Transportadora table
+- name: Insert data into the Carrier table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO Transportadora (nome, contato) VALUES ('{{ item.nome }}', '{{ item.contato }}');"
+    query: "INSERT INTO carrier (name, contact) VALUES ('{{ item.name }}', '{{ item.contact }}');"
   loop:
-    - { nome: 'Carrier 1', contato: 'Contact 1' }
-    - { nome: 'Carrier 2', contato: 'Contact 2' }
+    - { name: 'Carrier 1', contact: 'Contact 1' }
+    - { name: 'Carrier 2', contact: 'Contact 2' }
   tags:
     - create-data
 
-- name: Insert data into the Veiculo table
+- name: Insert data into the Vehicle table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO Veiculo (nome, modelo, placa) VALUES ('{{ item.nome }}', '{{ item.modelo }}', '{{ item.placa }}');"
+    query: "INSERT INTO vehicle (name, model, license_plate) VALUES ('{{ item.name }}', '{{ item.model }}', '{{ item.license_plate }}');"
   loop:
-    - { nome: 'Vehicle 1', modelo: 'Model 1', placa: 'ABC0123' }
-    - { nome: 'Vehicle 2', modelo: 'Model 2', placa: 'XYZ0789' }
+    - { name: 'Vehicle 1', model: 'Model 1', license_plate: 'ABC0123' }
+    - { name: 'Vehicle 2', model: 'Model 2', license_plate: 'XYZ0789' }
   tags:
     - create-data
 
-- name: Insert data into the Viagem table
+- name: Insert data into the Trip table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO Viagem (origem_id, destino_id, produto_id, transportadora_id, veiculo_id, data_partida, data_chegada) VALUES (1, 2, 1, 1, 1, '{{ item.data_partida }}'::timestamp, '{{ item.data_chegada }}'::timestamp);"
+    query: "INSERT INTO trip (origin_id, destination_id, product_id, carrier_id, vehicle_id, leaving_date, arrival_date) VALUES (1, 2, 1, 1, 1, '{{ item.leaving_date }}'::timestamp, '{{ item.arrival_date }}'::timestamp);"
   loop:
-    - { data_partida: '2023-01-01 08:00:00', data_chegada: '2024-01-01 16:00:00' }
-    - { data_partida: '2023-02-01 09:00:00', data_chegada: '2024-02-01 17:00:00' }
+    - { leaving_date: '2023-01-01 08:00:00', arrival_date: '2024-01-01 16:00:00' }
+    - { leaving_date: '2023-02-01 09:00:00', arrival_date: '2024-02-01 17:00:00' }
   tags:
     - create-data
