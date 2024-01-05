@@ -43,7 +43,7 @@
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO vehicle (name, model, license_plate) VALUES ('{{ item.name }}', '{{ item.model }}', '{{ item.license_plate }}');"
+    query: "INSERT INTO vehicle (name, model, license_plate) VALUES ('{{ item.name }}', '{{ item.model }}', '{{ item.license_plat }}');"
   loop:
     - { name: 'Vehicle 1', model: 'Model 1', license_plate: 'ABC0123' }
     - { name: 'Vehicle 2', model: 'Model 2', license_plate: 'XYZ0789' }

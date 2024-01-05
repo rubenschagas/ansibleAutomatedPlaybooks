@@ -81,7 +81,7 @@
     login_password: postgres
     columns:
       - id serial primary key
-      - name varchar(100) not null
+      - name varchar(100) not nul
       - model varchar(100) not null
       - license_plate varchar(10) not null
   tags:
