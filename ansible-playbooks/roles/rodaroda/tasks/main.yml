@@ -1,5 +1,4 @@
 ---
-
 - name: Create the ruler user and the company db
   postgresql_user:
     name: ruler
@@ -27,6 +26,39 @@
     - create-db
     - create-user-db-table
 
+- name: Create the Brazil states table
+  postgresql_table:
+    db: rodaroda
+    table: brazilian_states
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - uf_code varchar(100) not null unique
+      - uf varchar(100) not null unique
+      - uf_name varchar(100) not null unique
+      - state varchar(100) check (state in ('active', 'inactive')) not null
+  tags:
+    - create-table
+
+- name: Create the Logistic roles table with some columns
+  postgresql_table:
+    db: rodaroda
+    table: logistic_roles
+    state: present
+    login_user: postgres
+    login_password: postgres
+    owner: ruler
+    login_unix_socket: /var/run/postgresql/
+    columns:
+      - id serial primary key
+      - logistic_type varchar(100) check (logistic_type in ('distribution', 'production', 'reversed', 'supply')) not null unique
+      - state varchar(100) check (state in ('active', 'inactive')) not null
+  tags:
+    - create-table
+    - create-user-db-table
+
 - name: Create the Locality table with some columns
   postgresql_table:
     db: rodaroda
@@ -38,11 +70,29 @@
     login_unix_socket: /var/run/postgresql/
     columns:
       - id serial primary key
+      - uf_id int references brazilian_states(id) on delete no action
+      - logistic_type_id int references logistic_roles(id) on delete no action
+      - cnpj varchar(100) not null unique
       - name varchar(100) not null
       - type varchar(100) check (type in ('origin', 'destination')) not null
+      - state varchar(100) check (state in ('active', 'inactive')) not null
   tags:
     - create-table
     - create-user-db-table
+
+- name: Create the Product category table
+  postgresql_table:
+    db: rodaroda
+    table: products_category
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - category varchar(100) not null
+      - state varchar(100) check (state in ('active', 'inactive')) not null
+  tags:
+    - create-table
 
 - name: Create the Product table
   postgresql_table:
@@ -53,22 +103,52 @@
     login_password: postgres
     columns:
       - id serial primary key
+      - product_category_id int references products_category(id) on delete no action
       - name varchar(100) not null
       - description text not null
+      - state varchar(100) check (state in ('active', 'inactive')) not null
   tags:
     - create-table
 
-- name: Create the Carrier table
+- name: Create the License plate table
   postgresql_table:
     db: rodaroda
-    table: carrier
+    table: license_plate
     state: present
     login_user: postgres
     login_password: postgres
     columns:
       - id serial primary key
-      - name varchar(100) not null
-      - contact varchar(100) not null
+      - license_plate varchar(100) not null unique
+      - state varchar(100) check (state in ('active', 'inactive')) not null
+  tags:
+      - create-table
+
+- name: Create the Vehicle type table
+  postgresql_table:
+    db: rodaroda
+    table: vehicle_type
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - vehicle_type varchar(100) check (vehicle_type in ('bitrem', 'bau', 'van', 'carreta', 'outros' )) not null unique
+      - state varchar(100) check (state in ('active', 'inactive')) not null
+  tags:
+    - create-table
+
+- name: Create the Vehicle fleet table
+  postgresql_table:
+    db: rodaroda
+    table: vehicles_fleet
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - fleet_name varchar(100) not null unique
+      - state varchar(100) check (state in ('active', 'inactive')) not null
   tags:
     - create-table
 
@@ -81,9 +161,46 @@
     login_password: postgres
     columns:
       - id serial primary key
-      - name varchar(100) not nul
+      - vehicle_license_plate_id int references license_plate(id) on delete no action unique
+      - vehicle_type_id int references vehicle_type(id) on delete no action
+      - vehicle_fleet_id int references vehicles_fleet(id) on delete no action
+      - document_number varchar(100) not null unique
       - model varchar(100) not null
-      - license_plate varchar(10) not null
+      - state varchar(100) check (state in ('active', 'inactive', 'unavailable')) not null
+  tags:
+    - create-table
+
+- name: Create the Carrier table
+  postgresql_table:
+    db: rodaroda
+    table: carrier
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - fleet_id int references vehicles_fleet(id) on delete no action
+      - uf_id int references brazilian_states(id) on delete no action
+      - cnpj varchar(100) not null unique
+      - name varchar(100) not null
+      - contact varchar(100) not null
+      - state varchar(100) check (state in ('active', 'inactive')) not null
+  tags:
+    - create-table
+
+- name: Create the Driver table
+  postgresql_table:
+    db: rodaroda
+    table: driver
+    state: present
+    login_user: postgres
+    login_password: postgres
+    columns:
+      - id serial primary key
+      - cpf varchar(100) not null unique
+      - name varchar(100) not null
+      - contact varchar(100) not null
+      - state varchar(100) check (state in ('active', 'inactive', 'unavailable')) not null
   tags:
     - create-table
 
@@ -101,7 +218,9 @@
       - product_id int references product(id) on delete no action
       - carrier_id int references carrier(id) on delete no action
       - vehicle_id int references vehicle(id) on delete no action
+      - driver_id int references driver(id) on delete no action
       - leaving_date timestamp not null
       - arrival_date timestamp not null
+      - status varchar(100) check (status in ('planned', 'released', 'in execution', 'finished', 'canceled')) not null
   tags:
     - create-table
