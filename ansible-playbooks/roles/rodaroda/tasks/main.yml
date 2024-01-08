@@ -1,6 +1,6 @@
 ---
 
-- name: Create the ruler user and the company db
+- name: Create the ruler user and the rodaroda db
   postgresql_user:
     name: ruler
     state: present
@@ -8,12 +8,13 @@
     encrypted: true
     login_user: postgres
     login_password: postgres
-    comment: create the ruler user and the company db
+    comment: create the ruler user and the rodaroda db
   tags:
     - create-user
-    - create-user-db-table
+    - create-user-db
+    - create-rodaroda
 
-- name: Create the company db
+- name: Create the rodaroda db
   postgresql_db:
     name: rodaroda
     state: present
@@ -25,7 +26,8 @@
     encoding: UTF-8
   tags:
     - create-db
-    - create-user-db-table
+    - create-user-db
+    - create-rodaroda
 
 - name: Create the Locality table with some columns
   postgresql_table:
@@ -42,7 +44,7 @@
       - type varchar(100) check (type in ('origin', 'destination')) not null
   tags:
     - create-table
-    - create-user-db-table
+    - create-rodaroda
 
 - name: Create the Product table
   postgresql_table:
@@ -57,6 +59,7 @@
       - description text not null
   tags:
     - create-table
+    - create-rodaroda
 
 - name: Create the Carrier table
   postgresql_table:
@@ -71,6 +74,7 @@
       - contact varchar(100) not null
   tags:
     - create-table
+    - create-rodaroda
 
 - name: Create the Vehicle table
   postgresql_table:
@@ -86,6 +90,7 @@
       - license_plate varchar(10) not null
   tags:
     - create-table
+    - create-rodaroda
 
 - name: Create the Trip table
   postgresql_table:
@@ -105,3 +110,4 @@
       - arrival_date timestamp not null
   tags:
     - create-table
+    - create-rodaroda

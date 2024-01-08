@@ -1,15 +1,16 @@
 ---
+
 - hosts: localhost
   connection: local
   become: true
   gather_facts: true
   vars:
-    database_name: company
     postgres_max_connections: 100
     postgres_shared_buffer: "{{ (ansible_memtotal_mb*0.25)|int }}MB"
     postgres_work_mem: "{{ (ansible_memtotal_mb*0.25/postgres_max_connections)|int }}MB"
     postgres_maintenance_work_mem: "{{ (ansible_memtotal_mb*0.05)|int }}MB"
     postgres_effective_cache_size: "{{ (ansible_memtotal_mb*0.75)|int }}MB"
   roles:
+    - installs-psycopg2
     - create-postgres-container
     - rodaroda
