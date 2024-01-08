@@ -110,6 +110,7 @@
   tags:
     - create-data
 
+
 - name: Insert data into the Vehicles fleet table
   postgresql_query:
     db: rodaroda
