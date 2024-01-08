@@ -1,16 +1,76 @@
 ---
+- name: Insert data into the brazilian states table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO brazilian_states (uf_code, uf, uf_name, state) VALUES ('{{ item.uf_code }}', '{{ item.uf }}', '{{ item.uf_name }}', '{{ item.state }}');"
+  loop:
+    - { uf_code: '11', uf: 'RO', uf_name: 'Rondônia',  state: 'active' }
+    - { uf_code: '12', uf: 'AC', uf_name: 'Acre',  state: 'active' }
+    - { uf_code: '13', uf: 'AM', uf_name: 'Amazonas',  state: 'active' }
+    - { uf_code: '14', uf: 'RR', uf_name: 'Roraima',  state: 'active' }
+    - { uf_code: '15', uf: 'PA', uf_name: 'Pará',  state: 'active' }
+    - { uf_code: '16', uf: 'AP', uf_name: 'Amapá',  state: 'active' }
+    - { uf_code: '17', uf: 'TO', uf_name: 'Tocantins',  state: 'active' }
+    - { uf_code: '21', uf: 'MA', uf_name: 'Maranhão',  state: 'active' }
+    - { uf_code: '22', uf: 'PI', uf_name: 'Piauí',  state: 'active' }
+    - { uf_code: '23', uf: 'CE', uf_name: 'Ceará',  state: 'active' }
+    - { uf_code: '24', uf: 'RN', uf_name: 'Rio Grande do Norte',  state: 'active' }
+    - { uf_code: '25', uf: 'PB', uf_name: 'Paraíba',  state: 'active' }
+    - { uf_code: '26', uf: 'PE', uf_name: 'Pernambuco',  state: 'active' }
+    - { uf_code: '27', uf: 'AL', uf_name: 'Alagoas',  state: 'active' }
+    - { uf_code: '28', uf: 'SE', uf_name: 'Sergipe',  state: 'active' }
+    - { uf_code: '29', uf: 'BA', uf_name: 'Bahia',  state: 'active' }
+    - { uf_code: '31', uf: 'MG', uf_name: 'Minas Gerais',  state: 'active' }
+    - { uf_code: '32', uf: 'ES', uf_name: 'Espírito Santo',  state: 'active' }
+    - { uf_code: '33', uf: 'RJ', uf_name: 'Rio de Janeiro',  state: 'active' }
+    - { uf_code: '35', uf: 'SP', uf_name: 'São Paulo',  state: 'active' }
+    - { uf_code: '41', uf: 'PR', uf_name: 'Paraná',  state: 'active' }
+    - { uf_code: '42', uf: 'SC', uf_name: 'Santa Catarina',  state: 'active' }
+    - { uf_code: '43', uf: 'RS', uf_name: 'Rio Grande do Sul',  state: 'active' }
+    - { uf_code: '50', uf: 'MS', uf_name: 'Mato Grosso do Sul',  state: 'active' }
+    - { uf_code: '51', uf: 'MT', uf_name: 'Mato Grosso',  state: 'active' }
+    - { uf_code: '52', uf: 'GO', uf_name: 'Goiás',  state: 'active' }
+    - { uf_code: '53', uf: 'DF', uf_name: 'Distrito Federal',  state: 'active' }
+  tags:
+    - create-data
+
+- name: Insert data into the Logistic roles table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO logistic_roles (logistic_type, state) VALUES ('{{ item.logistic_type }}', '{{ item.state }}');"
+  loop:
+    - { logistic_type: 'distribution', state: 'active' }
+    - { logistic_type: 'production', state: 'active' }
+    - { logistic_type: 'reversed', state: 'active' }
+    - { logistic_type: 'supply', state: 'active' }
+  tags:
+    - create-data
 
 - name: Insert data into the Locality table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO locality (name, type) VALUES ('{{ item.name }}', '{{ item.type }}');"
+    query: "INSERT INTO locality (uf_id, logistic_type_id, cnpj, name, type, state) VALUES ('{{ item.uf_id }}', '{{ item.logistic_type_id }}', '{{ item.cnpj }}', '{{ item.name }}', '{{ item.type }}', '{{ item.state }}');"
   loop:
-    - { name: 'Locality 1', type: 'origin' }
-    - { name: 'Locality 2', type: 'destination' }
-    - { name: 'Locality 3', type: 'origin' }
-    - { name: 'Locality 4', type: 'destination' }
+    - { uf_id: 1, logistic_type_id: 1, cnpj: '8473626180001', name: 'Locality 1', type: 'origin', state: 'active' }
+    - { uf_id: 2, logistic_type_id: 2, cnpj: '8472647560001', name: 'Locality 2', type: 'destination', state: 'active' }
+  tags:
+    - create-data
+
+- name: Insert data into the Products category table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO products_category (category, state) VALUES ('{{ item.category }}', '{{ item.state }}' );"
+  loop:
+    - { category: 'Seeds', state: 'active' }
+    - { category: 'Liquids', state: 'active' }
   tags:
     - create-data
 
@@ -19,22 +79,47 @@
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO product (name, description) VALUES ('{{ item.name }}', '{{ item.description }}');"
+    query: "INSERT INTO product (product_category_id, name, description, state) VALUES (1, '{{ item.name }}', '{{ item.description }}', '{{ item.state }}' );"
   loop:
-    - { name: 'Product 1', description: 'Description 1' }
-    - { name: 'Product 2', description: 'Description 2' }
+    - { name: 'Soy', description: 'Description 1', state: 'active' }
+    - { name: 'Corn', description: 'Description 2', state: 'active' }
   tags:
     - create-data
 
-- name: Insert data into the Carrier table
+- name: Insert data into the License plate table
   postgresql_query:
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO carrier (name, contact) VALUES ('{{ item.name }}', '{{ item.contact }}');"
+    query: "INSERT INTO license_plate (license_plate, state) VALUES ('{{ item.license_plate }}', '{{ item.state }}');"
   loop:
-    - { name: 'Carrier 1', contact: 'Contact 1' }
-    - { name: 'Carrier 2', contact: 'Contact 2' }
+    - { license_plate: 'XHJ5421', state: 'active' }
+    - { license_plate: 'XII2121', state: 'active' }
+  tags:
+    - create-data
+
+- name: Insert data into the Vehicle type table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO vehicle_type (vehicle_type, state) VALUES ('{{ item.vehicle_type }}', '{{ item.state }}');"
+  loop:
+    - { vehicle_type: 'carreta', state: 'active' }
+    - { vehicle_type: 'bitrem', state: 'active' }
+  tags:
+    - create-data
+
+
+- name: Insert data into the Vehicles fleet table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO vehicles_fleet (fleet_name, state) VALUES ('{{ item.fleet_name }}', '{{ item.state }}');"
+  loop:
+    - { fleet_name: 'Fleet onix', state: 'active' }
+    - { fleet_name: 'Fleet beta', state: 'active' }
   tags:
     - create-data
 
@@ -43,10 +128,34 @@
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO vehicle (name, model, license_plate) VALUES ('{{ item.name }}', '{{ item.model }}', '{{ item.license_plate }}');"
+    query: "INSERT INTO vehicle (vehicle_license_plate_id, vehicle_type_id, vehicle_fleet_id, document_number, model, state) VALUES ('{{ item.vehicle_license_plate_id }}', '{{ item.vehicle_type_id }}', '{{item.vehicle_fleet_id}}', '{{item.document_number}}', '{{ item.model }}', '{{ item.state }}');"
   loop:
-    - { name: 'Vehicle 1', model: 'Model 1', license_plate: 'ABC0123' }
-    - { name: 'Vehicle 2', model: 'Model 2', license_plate: 'XYZ0789' }
+    - { vehicle_license_plate_id: 1, vehicle_type_id: 1, vehicle_fleet_id: 1, document_number: '99928736172' , model: 'Scania', state: 'active' }
+    - { vehicle_license_plate_id: 2, vehicle_type_id: 2, vehicle_fleet_id: 2, document_number: '85746378239' , model: 'Volvo', state: 'active' }
+  tags:
+    - create-data
+
+- name: Insert data into the Carrier table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO carrier (fleet_id, uf_id, cnpj, name, contact, state) VALUES ('{{ item.fleet_id }}', '{{ item.uf_id }}', '{{ item.cnpj }}', '{{ item.name }}', '{{ item.contact }}', '{{ item.state }}');"
+  loop:
+    - { fleet_id: 1, uf_id: 20, cnpj: '8473626180001', name: 'Carrier São Chico', contact: 'saochicocarrier@carrier.com.br', state: 'active' }
+    - { fleet_id: 2, uf_id: 22, cnpj: '8472647560001', name: 'Carrier Santos', contact: 'santoscarrier@carrier.com.br', state: 'active' }
+  tags:
+    - create-data
+
+- name: Insert data into the Driver table
+  postgresql_query:
+    db: rodaroda
+    login_user: postgres
+    login_password: postgres
+    query: "INSERT INTO driver (cpf, name, contact, state) VALUES ('{{ item.cpf }}', '{{ item.name }}', '{{ item.contact }}', '{{ item.state }}');"
+  loop:
+    - { cpf: '82746371890', name: 'Carlos Alberto', contact: '47999999999', state: 'active' }
+    - { cpf: '02948371689', name: 'Luis Silva', contact: '47999999999', state: 'active' }
   tags:
     - create-data
 
@@ -55,9 +164,9 @@
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO trip (origin_id, destination_id, product_id, carrier_id, vehicle_id, leaving_date, arrival_date) VALUES (1, 2, 1, 1, 1, '{{ item.leaving_date }}'::timestamp, '{{ item.arrival_date }}'::timestamp);"
+    query: "INSERT INTO trip (origin_id, destination_id, product_id, carrier_id, vehicle_id, driver_id, leaving_date, arrival_date, status) VALUES (1, 2, 1, 1, 1, 1, '{{ item.leaving_date }}'::timestamp, '{{ item.arrival_date }}'::timestamp, '{{ item.status }}');"
   loop:
-    - { leaving_date: '2023-01-01 08:00:00', arrival_date: '2024-01-01 16:00:00' }
-    - { leaving_date: '2023-02-01 09:00:00', arrival_date: '2024-02-01 17:00:00' }
+    - { leaving_date: '2023-01-01 08:00:00', arrival_date: '2024-01-01 16:00:00', status: 'planned' }
+    - { leaving_date: '2023-02-01 09:00:00', arrival_date: '2024-02-01 17:00:00', status: 'planned' }
   tags:
     - create-data
