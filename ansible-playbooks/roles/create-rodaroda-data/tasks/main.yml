@@ -67,7 +67,7 @@
     db: rodaroda
     login_user: postgres
     login_password: postgres
-    query: "INSERT INTO products_category (category, state) VALUES ('{{ item.category }}', '{{ item.state }}' );"
+    query: "INSERT INTO product_categories (category, state) VALUES ('{{ item.category }}', '{{ item.state }}' );"
   loop:
     - { category: 'Seeds', state: 'active' }
     - { category: 'Liquids', state: 'active' }
